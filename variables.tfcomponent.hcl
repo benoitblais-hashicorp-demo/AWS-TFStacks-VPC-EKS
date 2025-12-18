@@ -76,5 +76,4 @@ variable "eks_clusteradmin_username" {
 
 variable "delete" {
   type = bool
-  default = false
 }

@@ -34,11 +34,12 @@ deployment "development" {
 }
 ```
 
-When `delete = true`, all components will have empty `for_each` sets, causing Terraform to destroy all managed resources in the proper dependency order.
+When `delete = true`, the `removed` blocks in `components.tfcomponent.hcl` will activate and tell Terraform Stacks to destroy all component instances in the proper dependency order.
 
 **Important Notes:**
-- This approach properly destroys resources rather than orphaning them
+- This uses Terraform Stacks `removed` blocks to properly destroy resources
 - Resources are destroyed in reverse dependency order (Hashibank → Namespace → Addons → RBAC → EKS → VPC)
-- After destruction is complete, you can set `delete = false` again to recreate the infrastructure
+- The `removed` blocks only activate when `delete = true`, otherwise they have no effect
+- After destruction is complete, set `delete = false` again to recreate the infrastructure
 
 ![image](./img.jpg) 

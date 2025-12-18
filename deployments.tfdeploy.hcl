@@ -12,7 +12,7 @@ identity_token "k8s" {
 deployment "development" {
   inputs = {
     # Set delete = true to destroy all resources, false to create/maintain them
-    delete = true
+    delete = false
     
     aws_identity_token = identity_token.aws.jwt
     role_arn            = "arn:aws:iam::353671346900:role/tfc-benoitblais-hashicorp"

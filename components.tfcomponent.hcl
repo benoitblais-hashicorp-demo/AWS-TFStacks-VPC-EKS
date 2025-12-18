@@ -1,6 +1,6 @@
 #AWS VPC
 component "vpc" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./aws-vpc"
 
@@ -16,7 +16,7 @@ component "vpc" {
 
 #AWS EKS
 component "eks" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./aws-eks-fargate"
 
@@ -42,7 +42,7 @@ component "eks" {
 
 # Update K8s role-binding
 component "k8s-rbac" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./k8s-rbac"
 
@@ -59,7 +59,7 @@ component "k8s-rbac" {
 
 # K8s Addons - aws load balancer controller, coredns, vpc-cni, kube-proxy
 component "k8s-addons" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./aws-eks-addon"
 
@@ -84,7 +84,7 @@ component "k8s-addons" {
 
 # Namespace
 component "k8s-namespace" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./k8s-namespace"
 
@@ -100,7 +100,7 @@ component "k8s-namespace" {
 
 # Deploy Hashibank
 component "deploy-hashibank" {
-  for_each = var.delete ? [] : var.regions
+  for_each = var.regions
 
   source = "./hashibank-deploy"
 
@@ -111,5 +111,68 @@ component "deploy-hashibank" {
   providers = {
     kubernetes  = provider.kubernetes.oidc_configurations[each.value]
     time = provider.time.this
+  }
+}
+
+# Removed blocks for destroying resources
+# When var.delete = true, these blocks tell Terraform to destroy the component instances
+
+removed {
+  from = component.deploy-hashibank
+  source = "./hashibank-deploy"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
+  }
+}
+
+removed {
+  from = component.k8s-namespace
+  source = "./k8s-namespace"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
+  }
+}
+
+removed {
+  from = component.k8s-addons
+  source = "./aws-eks-addon"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
+  }
+}
+
+removed {
+  from = component.k8s-rbac
+  source = "./k8s-rbac"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
+  }
+}
+
+removed {
+  from = component.eks
+  source = "./aws-eks-fargate"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
+  }
+}
+
+removed {
+  from = component.vpc
+  source = "./aws-vpc"
+  for_each = var.delete ? var.regions : []
+
+  lifecycle {
+    destroy = true
   }
 }

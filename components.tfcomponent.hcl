@@ -122,6 +122,11 @@ removed {
   source = "./hashibank-deploy"
   for_each = var.delete ? var.regions : []
 
+  providers = {
+    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+    time = provider.time.this
+  }
+
   lifecycle {
     destroy = true
   }
@@ -131,6 +136,10 @@ removed {
   from = component.k8s-namespace[each.value]
   source = "./k8s-namespace"
   for_each = var.delete ? var.regions : []
+
+  providers = {
+    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+  }
 
   lifecycle {
     destroy = true
@@ -142,6 +151,13 @@ removed {
   source = "./aws-eks-addon"
   for_each = var.delete ? var.regions : []
 
+  providers = {
+    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+    helm  = provider.helm.oidc_configurations[each.value]
+    aws    = provider.aws.configurations[each.value]
+    time = provider.time.this
+  }
+
   lifecycle {
     destroy = true
   }
@@ -151,6 +167,10 @@ removed {
   from = component.k8s-rbac[each.value]
   source = "./k8s-rbac"
   for_each = var.delete ? var.regions : []
+
+  providers = {
+    kubernetes  = provider.kubernetes.configurations[each.value]
+  }
 
   lifecycle {
     destroy = true
@@ -162,6 +182,14 @@ removed {
   source = "./aws-eks-fargate"
   for_each = var.delete ? var.regions : []
 
+  providers = {
+    aws    = provider.aws.configurations[each.value]
+    cloudinit = provider.cloudinit.this
+    kubernetes  = provider.kubernetes.this
+    time = provider.time.this
+    tls = provider.tls.this
+  }
+
   lifecycle {
     destroy = true
   }
@@ -171,6 +199,10 @@ removed {
   from = component.vpc[each.value]
   source = "./aws-vpc"
   for_each = var.delete ? var.regions : []
+
+  providers = {
+    aws     = provider.aws.configurations[each.value]
+  }
 
   lifecycle {
     destroy = true

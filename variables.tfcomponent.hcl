@@ -42,12 +42,6 @@ variable "vpc_name" {
   type        = string
 }
 
-variable "delete" {
-  description = "(Optional) Flag to indicate whether resources should be deleted."
-  type        = bool
-  default     = false
-}
-
 # to change to create a new one
 variable "eks_clusteradmin_arn" {
   description = "(Optional) ARN of the IAM role or user to grant cluster admin access in EKS."

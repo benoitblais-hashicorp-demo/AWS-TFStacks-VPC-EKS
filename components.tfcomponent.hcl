@@ -103,19 +103,19 @@ component "k8s-namespace" {
   }
 }
 
-# Deploy Hashibank
-component "deploy-hashibank" {
-  for_each = var.regions
+# # Deploy Hashibank
+# component "deploy-hashibank" {
+#   for_each = var.regions
 
-  source = "./hashibank-deploy"
+#   source = "./hashibank-deploy"
 
-  inputs = {
-    delete = var.delete
-    hashibank_namespace = component.k8s-namespace[each.value].namespace
-  }
+#   inputs = {
+#     delete = var.delete
+#     hashibank_namespace = component.k8s-namespace[each.value].namespace
+#   }
 
-  providers = {
-    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
-    time = provider.time.this
-  }
-}
+#   providers = {
+#     kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+#     time = provider.time.this
+#   }
+# }

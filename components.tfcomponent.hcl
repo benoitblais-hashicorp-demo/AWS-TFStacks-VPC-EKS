@@ -118,7 +118,7 @@ component "deploy-hashibank" {
 # When var.delete = true, these blocks tell Terraform to destroy the component instances
 
 removed {
-  from = component.deploy-hashibank
+  from = component.deploy-hashibank[each.value]
   source = "./hashibank-deploy"
   for_each = var.delete ? var.regions : []
 
@@ -128,7 +128,7 @@ removed {
 }
 
 removed {
-  from = component.k8s-namespace
+  from = component.k8s-namespace[each.value]
   source = "./k8s-namespace"
   for_each = var.delete ? var.regions : []
 
@@ -138,7 +138,7 @@ removed {
 }
 
 removed {
-  from = component.k8s-addons
+  from = component.k8s-addons[each.value]
   source = "./aws-eks-addon"
   for_each = var.delete ? var.regions : []
 
@@ -148,7 +148,7 @@ removed {
 }
 
 removed {
-  from = component.k8s-rbac
+  from = component.k8s-rbac[each.value]
   source = "./k8s-rbac"
   for_each = var.delete ? var.regions : []
 
@@ -158,7 +158,7 @@ removed {
 }
 
 removed {
-  from = component.eks
+  from = component.eks[each.value]
   source = "./aws-eks-fargate"
   for_each = var.delete ? var.regions : []
 
@@ -168,7 +168,7 @@ removed {
 }
 
 removed {
-  from = component.vpc
+  from = component.vpc[each.value]
   source = "./aws-vpc"
   for_each = var.delete ? var.regions : []
 

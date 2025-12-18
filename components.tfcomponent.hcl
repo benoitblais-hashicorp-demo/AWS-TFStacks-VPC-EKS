@@ -1,11 +1,10 @@
 #AWS VPC
 component "vpc" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./aws-vpc"
 
   inputs = {
-    delete = var.delete
     vpc_name = var.vpc_name
     vpc_cidr = var.vpc_cidr
   }
@@ -17,12 +16,11 @@ component "vpc" {
 
 #AWS EKS
 component "eks" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./aws-eks-fargate"
 
   inputs = {
-    delete = var.delete
     vpc_id = component.vpc[each.value].vpc_id
     private_subnets = component.vpc[each.value].private_subnets
     kubernetes_version = var.kubernetes_version
@@ -44,12 +42,11 @@ component "eks" {
 
 # Update K8s role-binding
 component "k8s-rbac" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./k8s-rbac"
 
   inputs = {
-    delete = var.delete
     cluster_endpoint = component.eks[each.value].cluster_endpoint
     tfc_organization_name = var.tfc_organization_name
   }
@@ -62,12 +59,11 @@ component "k8s-rbac" {
 
 # K8s Addons - aws load balancer controller, coredns, vpc-cni, kube-proxy
 component "k8s-addons" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./aws-eks-addon"
 
   inputs = {
-    delete = var.delete
     cluster_name = component.eks[each.value].cluster_name
     vpc_id = component.vpc[each.value].vpc_id
     private_subnets = component.vpc[each.value].private_subnets
@@ -88,12 +84,11 @@ component "k8s-addons" {
 
 # Namespace
 component "k8s-namespace" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./k8s-namespace"
 
   inputs = {
-    delete = var.delete
     namespace = var.namespace
     labels = component.k8s-addons[each.value].eks_addons
   }
@@ -105,12 +100,11 @@ component "k8s-namespace" {
 
 # Deploy Hashibank
 component "deploy-hashibank" {
-  for_each = var.regions
+  for_each = var.delete ? [] : var.regions
 
   source = "./hashibank-deploy"
 
   inputs = {
-    delete = var.delete
     hashibank_namespace = component.k8s-namespace[each.value].namespace
   }
 

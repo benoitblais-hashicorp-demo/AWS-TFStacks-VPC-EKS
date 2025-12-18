@@ -1,6 +1,7 @@
 
 # odic-identity pre-requisite
 resource "kubernetes_cluster_role_binding_v1" "oidc_role" {
+  count = var.delete ? 0 : 1
   metadata {
     generate_name = "odic-identity"
   }

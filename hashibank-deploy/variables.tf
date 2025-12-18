@@ -3,3 +3,7 @@ variable "hashibank_namespace" {
   type        = string
 }
 
+variable "delete" {
+  type    = bool
+  default = false
+}

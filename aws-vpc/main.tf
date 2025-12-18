@@ -5,11 +5,12 @@ locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
 
   tags = {
-    Blueprint  = var.vpc_name
+    Blueprint = var.vpc_name
   }
 }
 
 module "vpc" {
+  count   = var.delete ? 0 : 1
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0"
 

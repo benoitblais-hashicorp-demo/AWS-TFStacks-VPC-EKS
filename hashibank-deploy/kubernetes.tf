@@ -1,7 +1,8 @@
 # hashibank deployment
 resource "kubernetes_deployment" "hashibank" {
+  count = var.delete ? 0 : 1
   metadata {
-    name = "hashibank"
+    name      = "hashibank"
     namespace = var.hashibank_namespace
   }
 
@@ -34,17 +35,17 @@ resource "kubernetes_deployment" "hashibank" {
             container_port = 8080
           }
 
-            resources {
-                limits = {
-                cpu    = "200m"
-                memory = "256Mi"
-                }
-
-                requests = {
-                cpu    = "100m"
-                memory = "128Mi"
-                }
+          resources {
+            limits = {
+              cpu    = "200m"
+              memory = "256Mi"
             }
+
+            requests = {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+          }
 
         }
       }
@@ -54,6 +55,7 @@ resource "kubernetes_deployment" "hashibank" {
 }
 
 resource "time_sleep" "wait_60_seconds" {
+  count      = var.delete ? 0 : 1
   depends_on = [kubernetes_deployment.hashibank]
 
   create_duration = "60s"
@@ -62,15 +64,16 @@ resource "time_sleep" "wait_60_seconds" {
 
 #hashibank ingress
 resource "kubernetes_ingress_v1" "hashibank" {
-  depends_on = [time_sleep.wait_60_seconds]
+  count                  = var.delete ? 0 : 1
+  depends_on             = [time_sleep.wait_60_seconds]
   wait_for_load_balancer = false
   metadata {
-    name        = "hashibank"
+    name      = "hashibank"
     namespace = var.hashibank_namespace
     annotations = {
-      "kubernetes.io/ingress.class"             = "alb"
-      "alb.ingress.kubernetes.io/scheme"        = "internet-facing"
-      "alb.ingress.kubernetes.io/target-type"   = "ip"
+      "kubernetes.io/ingress.class"           = "alb"
+      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+      "alb.ingress.kubernetes.io/target-type" = "ip"
     }
   }
 
@@ -80,7 +83,7 @@ resource "kubernetes_ingress_v1" "hashibank" {
     rule {
       http {
         path {
-          path     = "/"
+          path      = "/"
           path_type = "Prefix"
 
           backend {
@@ -100,7 +103,8 @@ resource "kubernetes_ingress_v1" "hashibank" {
 
 # hashibank service
 resource "kubernetes_service_v1" "hashibank" {
-  depends_on = [time_sleep.wait_60_seconds]
+  count                  = var.delete ? 0 : 1
+  depends_on             = [time_sleep.wait_60_seconds]
   wait_for_load_balancer = false
   metadata {
     name      = "hashibank"

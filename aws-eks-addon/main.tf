@@ -1,10 +1,11 @@
 locals {
   tags = {
-    Blueprint  = var.cluster_name
+    Blueprint = var.cluster_name
   }
 }
 
 module "eks_blueprints_addons" {
+  count   = var.delete ? 0 : 1
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.1"
 
@@ -52,14 +53,14 @@ module "eks_blueprints_addons" {
 
     }
 
-    vpc-cni    = {
+    vpc-cni = {
       addon_version = "v1.18.3-eksbuild.1"
     }
 
     kube-proxy = {
       addon_version = "v1.30.0-eksbuild.3"
     }
-    
+
   }
 
   # Enable Fargate logging

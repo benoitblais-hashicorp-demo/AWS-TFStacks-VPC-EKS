@@ -1,7 +1,12 @@
 variable "tfc_organization_name" {
-  type    = string
+  type = string
 }
 
 variable "cluster_endpoint" {
-  type    = string
+  type = string
+}
+
+variable "delete" {
+  type    = bool
+  default = false
 }

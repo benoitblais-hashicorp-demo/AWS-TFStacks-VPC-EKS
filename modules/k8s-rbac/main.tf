@@ -12,7 +12,7 @@ resource "time_sleep" "wait_for_cluster" {
 # odic-identity pre-requisite
 resource "kubernetes_cluster_role_binding_v1" "oidc_role" {
   depends_on = [time_sleep.wait_for_cluster]
-  
+
   metadata {
     generate_name = "odic-identity"
   }

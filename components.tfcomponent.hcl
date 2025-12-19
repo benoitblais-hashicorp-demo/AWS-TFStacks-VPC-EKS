@@ -55,6 +55,7 @@ component "k8s-rbac" {
 
   providers = {
     kubernetes  = provider.kubernetes.configurations[each.value]
+    time = provider.time.this
   }
 }
 

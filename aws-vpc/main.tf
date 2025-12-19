@@ -10,7 +10,6 @@ locals {
 }
 
 module "vpc" {
-  count   = var.delete ? 0 : 1
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0"
 

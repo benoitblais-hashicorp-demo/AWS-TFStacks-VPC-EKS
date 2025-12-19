@@ -27,8 +27,3 @@ variable "oidc_binding_id" {
   type        = string
   description = "used for component dependency"
 }
-
-variable "delete" {
-  type    = bool
-  default = false
-}

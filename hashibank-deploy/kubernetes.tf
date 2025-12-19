@@ -1,6 +1,5 @@
 # hashibank deployment
 resource "kubernetes_deployment" "hashibank" {
-  count = var.delete ? 0 : 1
   metadata {
     name      = "hashibank"
     namespace = var.hashibank_namespace
@@ -55,7 +54,6 @@ resource "kubernetes_deployment" "hashibank" {
 }
 
 resource "time_sleep" "wait_60_seconds" {
-  count      = var.delete ? 0 : 1
   depends_on = [kubernetes_deployment.hashibank]
 
   create_duration = "60s"
@@ -64,7 +62,6 @@ resource "time_sleep" "wait_60_seconds" {
 
 #hashibank ingress
 resource "kubernetes_ingress_v1" "hashibank" {
-  count                  = var.delete ? 0 : 1
   depends_on             = [time_sleep.wait_60_seconds]
   wait_for_load_balancer = false
   metadata {
@@ -103,7 +100,6 @@ resource "kubernetes_ingress_v1" "hashibank" {
 
 # hashibank service
 resource "kubernetes_service_v1" "hashibank" {
-  count                  = var.delete ? 0 : 1
   depends_on             = [time_sleep.wait_60_seconds]
   wait_for_load_balancer = false
   metadata {

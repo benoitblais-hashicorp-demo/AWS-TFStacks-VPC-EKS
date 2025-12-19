@@ -5,7 +5,6 @@ locals {
 }
 
 module "eks_blueprints_addons" {
-  count   = var.delete ? 0 : 1
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.1"
 

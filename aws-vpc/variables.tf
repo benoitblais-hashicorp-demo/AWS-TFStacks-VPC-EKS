@@ -5,8 +5,3 @@ variable "vpc_name" {
 variable "vpc_cidr" {
   type = string
 }
-
-variable "delete" {
-  type    = bool
-  default = false
-}

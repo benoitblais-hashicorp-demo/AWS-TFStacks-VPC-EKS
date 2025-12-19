@@ -8,8 +8,3 @@ variable "labels" {
     mylabel = "example-label"
   }
 }
-
-variable "delete" {
-  type    = bool
-  default = false
-}

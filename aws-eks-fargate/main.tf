@@ -6,7 +6,6 @@ locals {
 
 
 module "eks" {
-  count   = var.delete ? 0 : 1
   source  = "terraform-aws-modules/eks/aws"
   version = "20.2.0"
 
@@ -89,21 +88,18 @@ module "eks" {
 }
 
 data "aws_eks_cluster" "upstream" {
-  count      = var.delete ? 0 : 1
   depends_on = [module.eks]
   name       = var.cluster_name
 
 }
 
 data "aws_eks_cluster_auth" "upstream_auth" {
-  count      = var.delete ? 0 : 1
   depends_on = [module.eks]
   name       = var.cluster_name
 }
 
 
 resource "aws_eks_identity_provider_config" "oidc_config" {
-  count        = var.delete ? 0 : 1
   depends_on   = [module.eks]
   cluster_name = var.cluster_name
 

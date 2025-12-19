@@ -1,13 +1,3 @@
-# variable "aws_auth_roles" {
-#   description = "List of IAM roles to map to Kubernetes RBAC groups for EKS cluster authentication."
-#   type = list(object({
-#     rolearn  = string
-#     username = string
-#     groups   = list(string)
-#   }))
-#   default = []
-# }
-
 variable "aws_identity_token" {
   description = "(Required) Ephemeral AWS identity token for authentication with AWS services."
   type        = string
@@ -27,6 +17,11 @@ variable "k8s_identity_token" {
   sensitive   = true
 }
 
+variable "role_arn" {
+  description = "(Required) ARN of the IAM role to assume for AWS operations"
+  type        = string
+}
+
 variable "tfc_organization_name" {
   description = "(Required) Name of the Terraform Cloud organization"
   type        = string
@@ -42,16 +37,28 @@ variable "vpc_name" {
   type        = string
 }
 
-# to change to create a new one
-variable "eks_clusteradmin_arn" {
-  description = "(Optional) ARN of the IAM role or user to grant cluster admin access in EKS."
-  type        = string
+variable "create_clusteradmin_role" {
+  description = "(Optional) Whether to create a new IAM role for EKS cluster admin access. If true, a role will be created. If false, you must provide eks_clusteradmin_arn and eks_clusteradmin_username."
+  type        = bool
+  default     = false
 }
 
-# to change to create a new one
-variable "eks_clusteradmin_username" {
-  description = "(Optional) Username to assign to the EKS cluster administrator."
+variable "clusteradmin_role_name" {
+  description = "(Optional) Name for the IAM role to create for cluster admin access. Only used if create_clusteradmin_role is true. Defaults to '<cluster_name>-clusteradmin' if not specified."
   type        = string
+  default     = ""
+}
+
+variable "eks_clusteradmin_arn" {
+  description = "(Optional) ARN of an existing IAM role or user to grant cluster admin access. Only used if create_clusteradmin_role is false. Leave empty to skip additional admin access."
+  type        = string
+  default     = ""
+}
+
+variable "eks_clusteradmin_username" {
+  description = "(Optional) Username to assign to the existing IAM principal for cluster admin access. Only used if create_clusteradmin_role is false and eks_clusteradmin_arn is provided."
+  type        = string
+  default     = ""
 }
 
 variable "kubernetes_version" {
@@ -72,12 +79,6 @@ variable "regions" {
   default     = ["ca-central-1"]
 }
 
-# to change to create a new one
-variable "role_arn" {
-  description = "(Optional) ARN of the IAM role to assume for AWS operations"
-  type        = string
-}
-
 variable "tfc_hostname" {
   description = "(Optional) Hostname of the Terraform Cloud or Terraform Enterprise instance"
   type        = string
@@ -89,9 +90,3 @@ variable "tfc_kubernetes_audience" {
   type        = string
   default     = "k8s.workload.identity"
 }
-
-# variable "workload_idp_name" {
-#   description = "Name of the workload identity provider for TFStacks authentication"
-#   type = string
-#   default = "tfstacks-workload-identity-provider"
-# }

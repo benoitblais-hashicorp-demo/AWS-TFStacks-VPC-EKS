@@ -38,7 +38,6 @@ required_providers {
     source = "hashicorp/random"
     version = "~> 3.7.0"
   }
-
 }
 
 provider "aws" "configurations" {
@@ -48,47 +47,52 @@ provider "aws" "configurations" {
     region = each.value
 
     assume_role_with_web_identity {
-      role_arn                = var.role_arn
+      role_arn           = var.role_arn
       web_identity_token = var.aws_identity_token
     }
   }
 }
 
-
-
 provider "kubernetes" "configurations" {
   for_each = var.regions
+
   config { 
     host                   = component.eks[each.value].cluster_endpoint
     cluster_ca_certificate = base64decode(component.eks[each.value].cluster_certificate_authority_data)
-    token   = component.eks[each.value].eks_token
+    token                  = component.eks[each.value].eks_token
   }
 }
 
 provider "kubernetes" "oidc_configurations" {
   for_each = var.regions
+
   config { 
     host                   = component.eks[each.value].cluster_endpoint
     cluster_ca_certificate = base64decode(component.eks[each.value].cluster_certificate_authority_data)
-    token   = var.k8s_identity_token
+    token                  = var.k8s_identity_token
   }
 }
 
 provider "helm" "oidc_configurations" {
   for_each = var.regions
+
   config {
     kubernetes {
       host                   = component.eks[each.value].cluster_endpoint
       cluster_ca_certificate = base64decode(component.eks[each.value].cluster_certificate_authority_data)
-      token   = var.k8s_identity_token
+      token                  = var.k8s_identity_token
     }
   }
 }
 
-
 provider "cloudinit" "this" {}
+
 provider "kubernetes" "this" {}
+
 provider "time" "this" {}
+
 provider "tls" "this" {}
+
 provider "local" "this" {}
+
 provider "random" "this" {}

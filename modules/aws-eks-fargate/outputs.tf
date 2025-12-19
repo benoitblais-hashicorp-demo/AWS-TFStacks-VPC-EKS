@@ -32,3 +32,13 @@ output "eks_token" {
   value     = data.aws_eks_cluster_auth.upstream_auth.token
   sensitive = true
 }
+
+output "clusteradmin_role_arn" {
+  description = "ARN of the created cluster admin IAM role (if created)"
+  value       = var.create_clusteradmin_role ? aws_iam_role.eks_clusteradmin[0].arn : null
+}
+
+output "clusteradmin_role_name" {
+  description = "Name of the cluster admin IAM role (created or provided)"
+  value       = var.create_clusteradmin_role ? aws_iam_role.eks_clusteradmin[0].name : var.eks_clusteradmin_username
+}

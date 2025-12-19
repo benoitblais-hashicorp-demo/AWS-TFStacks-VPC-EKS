@@ -2,7 +2,35 @@ locals {
   tags = {
     Blueprint = var.cluster_name
   }
+  clusteradmin_role_name = var.clusteradmin_role_name != "" ? var.clusteradmin_role_name : "${var.cluster_name}-clusteradmin"
 }
+
+# IAM role for EKS cluster admin access (optional)
+resource "aws_iam_role" "eks_clusteradmin" {
+  count = var.create_clusteradmin_role ? 1 : 0
+
+  name = local.clusteradmin_role_name
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          AWS = data.aws_caller_identity.current.account_id
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = merge(local.tags, {
+    Name        = local.clusteradmin_role_name
+    Description = "EKS Cluster Admin role for ${var.cluster_name}"
+  })
+}
+
+data "aws_caller_identity" "current" {}
 
 
 module "eks" {
@@ -63,15 +91,15 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
 
-  access_entries = {
+  access_entries = var.create_clusteradmin_role || var.eks_clusteradmin_arn != "" ? {
     # One access entry with a policy associated
-    single = {
+    admin = {
       kubernetes_groups = []
-      principal_arn     = var.eks_clusteradmin_arn
-      username          = var.eks_clusteradmin_username
+      principal_arn     = var.create_clusteradmin_role ? aws_iam_role.eks_clusteradmin[0].arn : var.eks_clusteradmin_arn
+      username          = var.create_clusteradmin_role ? aws_iam_role.eks_clusteradmin[0].name : var.eks_clusteradmin_username
 
       policy_associations = {
-        single = {
+        admin = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
@@ -79,7 +107,7 @@ module "eks" {
         }
       }
     }
-  }
+  } : {}
 
 
   tags = local.tags

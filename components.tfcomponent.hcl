@@ -2,7 +2,7 @@
 component "vpc" {
   for_each = var.regions
 
-  source = "./aws-vpc"
+  source = "./modules/aws-vpc"
 
   inputs = {
     vpc_name = var.vpc_name
@@ -18,7 +18,7 @@ component "vpc" {
 component "eks" {
   for_each = var.regions
 
-  source = "./aws-eks-fargate"
+  source = "./modules/aws-eks-fargate"
 
   inputs = {
     vpc_id = component.vpc[each.value].vpc_id
@@ -27,6 +27,8 @@ component "eks" {
     cluster_name = var.cluster_name
     tfc_hostname = var.tfc_hostname
     tfc_kubernetes_audience = var.tfc_kubernetes_audience
+    create_clusteradmin_role = var.create_clusteradmin_role
+    clusteradmin_role_name = var.clusteradmin_role_name
     eks_clusteradmin_arn = var.eks_clusteradmin_arn
     eks_clusteradmin_username = var.eks_clusteradmin_username
   }
@@ -44,7 +46,7 @@ component "eks" {
 component "k8s-rbac" {
   for_each = var.regions
 
-  source = "./k8s-rbac"
+  source = "./modules/k8s-rbac"
 
   inputs = {
     cluster_endpoint = component.eks[each.value].cluster_endpoint
@@ -61,7 +63,7 @@ component "k8s-rbac" {
 component "k8s-addons" {
   for_each = var.regions
 
-  source = "./aws-eks-addon"
+  source = "./modules/aws-eks-addon"
 
   inputs = {
     cluster_name = component.eks[each.value].cluster_name
@@ -86,7 +88,7 @@ component "k8s-addons" {
 component "k8s-namespace" {
   for_each = var.regions
 
-  source = "./k8s-namespace"
+  source = "./modules/k8s-namespace"
 
   inputs = {
     namespace = var.namespace
@@ -102,7 +104,7 @@ component "k8s-namespace" {
 component "deploy-hashibank" {
   for_each = var.regions
 
-  source = "./hashibank-deploy"
+  source = "./modules/hashibank-deploy"
 
   inputs = {
     hashibank_namespace = component.k8s-namespace[each.value].namespace
@@ -113,4 +115,3 @@ component "deploy-hashibank" {
     time = provider.time.this
   }
 }
-

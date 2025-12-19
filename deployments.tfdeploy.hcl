@@ -10,7 +10,7 @@ identity_token "k8s" {
 
 
 deployment "development" {
-  destroy = false # set to true to destroy this deployment
+  destroy = true # set to true to destroy this deployment
   inputs = {
     aws_identity_token = identity_token.aws.jwt
     role_arn            = "arn:aws:iam::353671346900:role/tfc-benoitblais-hashicorp"
@@ -33,4 +33,7 @@ deployment "development" {
     k8s_identity_token = identity_token.k8s.jwt
 
   }
+
+  deployment_group = deployment_group.development
+
 }

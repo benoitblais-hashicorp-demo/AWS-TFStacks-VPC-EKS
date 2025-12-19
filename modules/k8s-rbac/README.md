@@ -2,6 +2,8 @@
 
 This Terraform module configures Kubernetes Role-Based Access Control (RBAC) by creating a cluster role binding that grants cluster admin privileges to HCP Terraform/Terraform Cloud workload identities via OIDC authentication.
 
+**Important**: This module includes a 30-second wait after detecting the EKS cluster endpoint to ensure the Kubernetes API server is fully initialized and ready to accept RBAC configurations. This prevents authorization errors during initial deployments.
+
 ## Permissions
 
 ### Kubernetes Provider Permissions
@@ -66,6 +68,7 @@ Configure the Kubernetes provider using one of the following methods:
 - **Zero Credentials Storage**: No need to store Kubernetes credentials in HCP Terraform
 - **Secure Authentication**: Leverages OIDC federation for temporary, scoped access
 - **Organization-Level Binding**: Single configuration applies to entire HCP Terraform organization
+- **Cluster Readiness Wait**: Built-in 30-second wait ensures EKS API server is fully responsive before RBAC configuration
 
 ## Usage
 
@@ -106,3 +109,44 @@ No requirements.
 | Name | Description |
 |------|-------------|
 | <a name="output_oidc_binding_id"></a> [oidc\_binding\_id](#output\_oidc\_binding\_id) | n/a |
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.25 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.1 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | ~> 2.25 |
+| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.1 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [kubernetes_cluster_role_binding_v1.oidc_role](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/cluster_role_binding_v1) | resource |
+| [time_sleep.wait_for_cluster](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_cluster_endpoint"></a> [cluster\_endpoint](#input\_cluster\_endpoint) | n/a | `string` | n/a | yes |
+| <a name="input_tfc_organization_name"></a> [tfc\_organization\_name](#input\_tfc\_organization\_name) | n/a | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_oidc_binding_id"></a> [oidc\_binding\_id](#output\_oidc\_binding\_id) | n/a |
+<!-- END_TF_DOCS -->

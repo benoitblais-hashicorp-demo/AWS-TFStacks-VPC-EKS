@@ -120,3 +120,43 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_hashibank_namespace"></a> [hashibank\_namespace](#input\_hashibank\_namespace) | hashibank namespace | `string` | n/a | yes |
+
+<!-- BEGIN_TF_DOCS -->
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.25 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.1 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | ~> 2.25 |
+| <a name="provider_time"></a> [time](#provider\_time) | ~> 0.1 |
+
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [kubernetes_deployment.hashibank](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
+| [kubernetes_ingress_v1.hashibank](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1) | resource |
+| [kubernetes_service_v1.hashibank](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service_v1) | resource |
+| [time_sleep.wait_60_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_hashibank_namespace"></a> [hashibank\_namespace](#input\_hashibank\_namespace) | hashibank namespace | `string` | n/a | yes |
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->

@@ -311,3 +311,83 @@ deployment "development" {
 2. **Apply the change** - Terraform Stacks will automatically destroy all resources in the proper dependency order
 
 3. **To recreate**, set `destroy = false` and apply again
+
+<!-- BEGIN_TF_DOCS -->
+# HCP Vault Bootstrap
+
+This Terraform configuration bootstraps HashiCorp Vault with authentication methods, policies, users, and groups for administrative access and HCP Terraform integration.
+
+## Permissions
+
+### Vault Provider Permissions
+
+The Vault provider requires a token with sufficient permissions to:
+
+- Create and manage authentication methods (`sys/auth/*`)
+- Create and manage policies (`sys/policies/acl/*`)
+- Create and manage identity entities and groups (`identity/*`)
+- Configure authentication backends and roles
+
+## Authentication
+
+### Vault Provider Authentication
+
+Configure the Vault provider using environment variables:
+
+- `VAULT_ADDR` - The address of the Vault server (e.g., `https://vault.example.com:8200`)
+- `VAULT_TOKEN` - A Vault token with appropriate permissions
+- `VAULT_NAMESPACE` - (Optional) The Vault namespace to use
+
+## Features
+
+- **Userpass Authentication**: Configures userpass auth method at `userpass-admin` path for administrative access
+- **User Management**: Creates two administrative users:
+  - `superadmin` - User with root policy (full access)
+  - `admin` - User with admin policy (administrative capabilities)
+- **Policy Management**: Manages policies from external HCL files:
+  - Root policy (`policies/root.hcl`) - Full access to all Vault paths
+  - Admin policy (`policies/admins.hcl`) - Administrative permissions
+- **Identity System**: Configures Vault identity entities, groups, and aliases for centralized access management
+- **JWT Authentication**: Enables JWT/OIDC authentication for HCP Terraform integration
+- **HCP Terraform Integration**: Configures JWT role for HCP Terraform workloads in the "HCP Vault" project
+- **Random Password Generation**: Generates secure, complex passwords for all users (24 characters with special characters)
+
+## Documentation
+
+## Requirements
+
+No requirements.
+
+## Modules
+
+No modules.
+
+## Required Inputs
+
+No required inputs.
+
+## Optional Inputs
+
+No optional inputs.
+
+## Resources
+
+No resources.
+
+## Outputs
+
+No outputs.
+
+<!-- markdownlint-enable -->
+<!-- markdownlint-disable-next-line MD041 -->
+## External Documentation
+
+This configuration was built using the following official documentation:
+
+- [Vault Provider Documentation](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
+- [Vault Userpass Auth Method](https://developer.hashicorp.com/vault/docs/auth/userpass)
+- [Vault JWT/OIDC Auth Method](https://developer.hashicorp.com/vault/docs/auth/jwt)
+- [Vault Policies](https://developer.hashicorp.com/vault/docs/concepts/policies)
+- [Vault Identity System](https://developer.hashicorp.com/vault/docs/secrets/identity)
+- [HCP Terraform Dynamic Provider Credentials](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/dynamic-provider-credentials)
+<!-- END_TF_DOCS -->
